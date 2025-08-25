@@ -1,0 +1,75 @@
+<div class="container">
+  <header>
+    <h1>Order Now From MacDonald's!</h1>
+    <input type="text" placeholder="Search menu..." (input)="onSearch($event)">
+  </header>
+
+  <div class="main-content">
+    <nav class="menu-sidebar" aria-label="Menu categories">
+      <h2>Menu</h2>
+      <ul>
+        <li *ngFor="let topic of menuTopics"
+            [class.active]="activeTopic === topic"
+            (click)="setActiveTopic(topic)">
+          {{ topic }}<sup *ngIf="topic === 'Happy Meal' || topic === 'Orbit'">*</sup>
+        </li>
+      </ul>
+    </nav>
+
+    <section class="pizzas-section">
+      <div class="sort-bar">
+        <h3>{{ activeTopic }}</h3>
+        <select>
+          <option>Sort By Pricing</option>
+        </select>
+      </div>
+
+      <div class="menu-items-list">
+        <ng-container *ngFor="let item of menuItems[activeTopic]; let i = index">
+          <div class="pizza-item">
+            <img [src]="item.img" [alt]="item.name">
+            <h4>{{ item.name }}</h4>
+            <p>{{ item.desc }}</p>
+            <div *ngIf="activeTopic === 'Pizzas'">
+              <div class="sizes">
+                <button
+                  *ngFor="let size of ['Small', 'Medium', 'Large']"
+                  [class.selected]="selectedSizes[i] === size"
+                  (click)="selectSize(i, size)">
+                  {{ size }}&nbsp;&nbsp;<span style="color: white; background-color: green;padding: 3px;border-radius:5px; "> £{{ getPizzaPrice(size) | number:'1.2-2' }}</span>
+                </button>
+              </div>
+              <button style="background-color: #000000; color: white;"
+                class="add-on"
+                [class.selected]="selectedSizes[i] === 'XL Large with Sauces'"
+                (click)="toggleAddOn(i)">
+                XL Large with Sauces &nbsp;&nbsp;<span style="color: white; background-color: green;padding: 3px;border-radius:5px; "> £{{ getPizzaPrice('XL Large with Sauces') | number:'1.2-2' }}
+              </span></button>
+            </div>
+            <button class="add-to-cart" (click)="addToCart(item, i)">
+              Add to Cart
+              <span *ngIf="activeTopic === 'Pizzas' && (selectedSizes[i] || 'Medium') === 'Small'">
+                ${{ getPizzaPrice('Small') | number:'1.2-2' }}
+              </span>
+              <span *ngIf="activeTopic === 'Pizzas' && (selectedSizes[i] || 'Medium') === 'Medium'">
+                ${{ getPizzaPrice('Medium') | number:'1.2-2' }}
+              </span>
+              <span *ngIf="activeTopic === 'Pizzas' && (selectedSizes[i] || 'Medium') === 'Large'">
+                ${{ getPizzaPrice('Large') | number:'1.2-2' }}
+              </span>
+              <span *ngIf="activeTopic === 'Pizzas' && (selectedSizes[i] || 'Medium') === 'XL Large with Sauces'">
+                ${{ getPizzaPrice('XL Large with Sauces') | number:'1.2-2' }}
+              </span>
+              <span *ngIf="activeTopic !== 'Pizzas'">
+                $9.90
+              </span>
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </section>
+  </div>
+</div>
+<br>
+<app-map></app-map>
+<app-buy-by-restaurant></app-buy-by-restaurant>

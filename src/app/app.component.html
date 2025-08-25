@@ -1,0 +1,124 @@
+<div class="navbar">
+  <div class="logo">
+    <img src="assets/mdi_food.svg" width="40px" height="40px">
+  </div>
+  <div class="nav-links">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+    <a routerLink="/menu" routerLinkActive="active">Menu</a>
+    <a routerLink="/app-restaurants-page" routerLinkActive="active">Restaurants</a>
+  </div>
+  <div class="nav-actions">
+    <div class="profile-icon" (click)="openProfileModal($event)">
+      <img src="assets/Group%206.svg" width="40px" height="40px" alt="Profile" style="cursor: pointer;">
+    </div>
+    <img src="assets/mdi_cart.svg" width="40px" height="40px" alt="Cart" (click)="toggleCart()" style="cursor: pointer;">
+  </div>
+
+  <!-- Profile Modal -->
+  <div class="profile-modal-overlay" *ngIf="showProfileModal" (click)="closeProfileModal()"></div>
+  <div class="profile-modal" *ngIf="showProfileModal">
+    <div class="profile-modal-content card-style" (click)="$event.stopPropagation()">
+      <button class="profile-modal-close" (click)="closeProfileModal()">×</button>
+      <div class="profile-btns-row">
+        <button class="profile-modal-btn">Sign In</button>
+        <button class="profile-modal-btn">Sign Up</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Sidebar -->
+  <div class="cart-overlay" *ngIf="showCart" (click)="toggleCart()"></div>
+  <div class="cart-sidebar" [class.active]="showCart">
+    <div class="cart-header">
+      <h2>Your Order</h2>
+      <button (click)="toggleCart()">×</button>
+    </div>
+    <div class="cart-items">
+      <ng-container *ngIf="cart.length > 0; else emptyCart">
+        <div class="cart-items">
+          <div *ngFor="let item of cart" class="cart-item">
+            <img [src]="item.img || 'assets/default-food.jpg'" [alt]="item.name" class="cart-item-image">
+            <div class="cart-item-details">
+              <div class="cart-item-name">{{item.name}}</div>
+              <div *ngIf="item.size" class="cart-item-size">{{item.size}}</div>
+              <div *ngIf="item.addOn" class="cart-item-addon">{{item.addOn}}</div>
+              <div class="cart-item-price">${{(item.price * item.quantity) | number:'1.2-2'}}</div>
+            </div>
+            <div class="cart-item-controls">
+              <div class="quantity-controls">
+                <button (click)="decreaseQuantity(item)" class="quantity-btn">-</button>
+                <span class="quantity">{{item.quantity}}</span>
+                <button (click)="increaseQuantity(item)" class="quantity-btn">+</button>
+              </div>
+              <button (click)="removeFromCart(item)" class="remove-btn">Remove</button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #emptyCart>
+        <p class="empty-cart">Your cart is empty</p>
+      </ng-template>
+    </div>
+    <div class="cart-footer" *ngIf="cart.length > 0">
+      <div class="cart-total">
+        <span>Total:</span>
+        <span>${{ sum | number:'1.2-2' }}</span>
+      </div>
+      <button class="checkout-btn">Checkout</button>
+    </div>
+  </div>
+</div>
+<script>
+  function toggleMenu() {
+    var nav = document.getElementById('nav-links');
+    nav.classList.toggle('show');
+    document.addEventListener('click', function handler(e) {
+      if (!nav.contains(e.target) && !document.getElementById('hamburger-menu').contains(e.target)) {
+        nav.classList.remove('show');
+        document.removeEventListener('click', handler);
+      }
+    });
+  }
+</script>
+
+<!-- Main Content -->
+<main>
+  <div class="toast" [class.show]="showToast">
+  <div class="toast-icon">✓</div>
+  <div class="toast-message">Item added to cart!</div>
+  <button class="toast-close" (click)="hideToast()">×</button>
+</div>
+
+<router-outlet (activate)="onActivate($event)"></router-outlet>
+</main>
+
+<footer class="footer">
+  <div class="left-section">
+    <img src="./assets/mdi_food.svg">
+  </div>
+  <div class="middle-section" style="margin-right: 27vw">
+    <div class="subscribe-title">Get Exclusive Deals in your Inbox</div>
+    <form class="subscribe-form">
+      <input type="email" class="subscribe-input" placeholder="youremail@gmail.com">
+      <button class="subscribe-btn">Subscribe</button>
+    </form>
+    <br>
+    <div class="social-icons">
+      <span class="social-icon"><i class="fa-brands fa-facebook-f"></i></span>
+      <span class="social-icon"><i class="fa-brands fa-instagram"></i></span>
+      <span class="social-icon"><i class="fa-brands fa-tiktok"></i></span>
+      <span class="social-icon"><i class="fa-brands fa-snapchat-ghost"></i></span>
+    </div>
+  </div>
+  <div class="right-section">
+    <div class="section-title">Links</div>
+    <ul class="links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Menus</a></li>
+      <li><a href="#">Restaurants</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="bottom-bar">
+  <div>Food Order 2025. All Rights Reserved.</div>
+</div>
